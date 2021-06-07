@@ -2,6 +2,9 @@ package com.anton111111.popupwindow
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -38,6 +41,14 @@ class RowView(
                 val listView = createList(this, items).apply {
                     measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
                 }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    //If the inflated view doesn't have a background set, or the popup window
+                    // itself doesn't have a background set (or has a transparent background)
+                    //then you won't get a shadow.
+                    setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                    elevation = 4.toPx.toFloat()
+                }
                 //To close on touch outside
                 isOutsideTouchable = true
                 contentView = listView
@@ -50,9 +61,16 @@ class RowView(
 
     private fun createList(popup: PopupWindow, popupItems: List<String>) =
         ScrollView(context).apply {
-            layoutParams = LayoutParams(WRAP_CONTENT, MATCH_PARENT)
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                setBackgroundColor(Color.GRAY)
+                setPadding(1.toPx, 1.toPx, 1.toPx, 1.toPx)
+            }
+            layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
             addView(LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    setBackgroundColor(Color.WHITE)
+                }
                 popupItems.forEach { item ->
                     addView(PopupItemView(context, item).apply {
                         setOnClickListener {
