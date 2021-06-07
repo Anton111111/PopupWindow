@@ -42,12 +42,12 @@ class RowView(
                 val listView = createList(this, items).apply {
                     measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
                 }
-                //If the inflated view doesn't have a background set, or the popup window
-                // itself doesn't have a background set (or has a transparent background)
-                //then you won't get a shadow.
-                setBackgroundDrawable(ColorDrawable(Color.WHITE))
+
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                    setBackgroundDrawable(ColorDrawable(Color.WHITE))
                     elevation = 4.toPx.toFloat()
+                } else {
+                    setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 }
                 //To close on touch outside
                 isOutsideTouchable = true
